@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tic Tac Toe</title>
+    <style>
+      /* Add CSS styles for the game board */
+      body {
+  background-color: #a5a5a5;
+}
+      table {
+  margin: 50px auto;
+  border-collapse: collapse;
+  background-color: #3e3e3e;
+  border: 10px solid #a5a5a5;
+  box-shadow: 0px 0px 10px 5px purple;
+}
+td {
+  width: 150px;
+  height: 150px;
+  border: 5px solid #a5a5a5;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 80px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 5px black;
+  transition: background-color 0.3s;
+}
+td:hover {
+  background-color: purple;
+  cursor: pointer;
+}
+button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  background-color: #a5a5a5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 2px purple;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #4d4d4d;
+}
+.status {
+  margin: 20px auto 0;
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  text-align: center;
+}
+    </style>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td id="cell1"></td>
+        <td id="cell2"></td>
+        <td id="cell3"></td>
+      </tr>
+      <tr>
+        <td id="cell4"></td>
+        <td id="cell5"></td>
+        <td id="cell6"></td>
+      </tr>
+      <tr>
+        <td id="cell7"></td>
+        <td id="cell8"></td>
+        <td id="cell9"></td>
+      </tr>
+    </table>
+
+    <button id="resetButton">Reset</button>
+
+    <div class="status"></div>
+
+    <script>
+      // JavaScript code for game logic
+      let currentPlayer = 'X';
+      const cells = document.querySelectorAll('td');
+      const statusDisplay = document.querySelector('.status');
+      const resetButton = document.getElementById('resetButton');
+
+      const winningCombinations = [
+        // Horizontal winning combinations
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        // Vertical winning combinations
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        // Diagonal winning combinations
+        [0, 4, 8],
+        [2, 4, 6]
+      ];
+
+      function checkForWin() {
+        let winner = null;
+        for (let i = 0; i < winningCombinations.length; i++) {
+          const [a, b, c] = winningCombinations[i];
+          if (cells[a].textContent !== '' &&
+              cells[a].textContent === cells[b].textContent &&
+              cells[b].textContent === cells[c].textContent) {
+            winner = cells[a].textContent;
+            break;
+          }
+        }
+        if (winner) {
+          statusDisplay.textContent = `${winner}'s wins!`;
+          cells.forEach(cell => {
+            cell.removeEventListener('click', handleCellClick);
+          });
+        }
+        return winner;
+      }
+
+      function handleCellClick(e) {
+        const cell = e.target;
+        if (cell.textContent === '') {
+          cell.textContent = currentPlayer;
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          checkForWin();
+          if (!checkForWin()) {
+            statusDisplay.textContent = `${currentPlayer}'s turn`;
+          }
+        }
+      }
+
+      function resetGame() {
+        cells.forEach(cell => {
+          cell.textContent = '';
+          cell.addEventListener('click', handleCellClick, { once: true });
+        });
+        currentPlayer = 'X';
+        statusDisplay.textContent = `${currentPlayer}'s turn`;
+      }
+
+      cells.forEach(cell => {
+        cell.addEventListener('click', handleCellClick, { once: true });
+      });
+
+      resetButton.addEventListener('click', resetGame);
+    </script>
+  </body>
+</html>
